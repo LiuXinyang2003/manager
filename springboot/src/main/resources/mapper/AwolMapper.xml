@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.mapper.AwolMapper">
+
+    <sql id="Base_Column_List">
+        id,name,time,reason,state,class_id
+    </sql>
+    <select id="selectStudent" resultType="com.example.entity.Awol">
+        select awol.*,classes.name as className
+        from awol
+        left join classes on classes.id = awol.class_id
+        <where>
+            awol.name=#{params.username}
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectTeacher" resultType="com.example.entity.Awol">
+        select awol.*,classes.name as className
+        from awol
+        left join classes on classes.id = awol.class_id
+        <where>
+            awol.class_id =#{params.classId}
+            <if test="params.name != null and params.name != ''"> and awol.name like concat('%',#{params.name},'%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectAwol" resultType="com.example.entity.Awol">
+        select awol.*,classes.name as className
+        from awol
+        left join classes on classes.id = awol.class_id
+        <where>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectAll" resultType="com.example.entity.Awol">
+        select awol.*,classes.name as className
+        from awol
+        left join classes on classes.id = awol.class_id
+        <where>
+            <if test="params.name != null and params.name != ''"> and awol.name like concat('%',#{params.name},'%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectById" resultType="com.example.entity.Awol">
+        select
+        <include refid="Base_Column_List" />
+        from awol
+        where id = #{id}
+    </select>
+
+    <delete id="deleteById">
+        delete from awol
+        where  id = #{id}
+    </delete>
+
+    <insert id="insert" parameterType="com.example.entity.Awol" useGeneratedKeys="true">
+        insert into awol
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+                <if test="id != null">id,</if>
+                <if test="name != null">name,</if>
+                <if test="time != null">time,</if>
+                <if test="state != null">state,</if>
+                <if test="reason != null">reason,</if>
+                <if test="classId != null">class_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+                <if test="id != null">#{id},</if>
+                <if test="name != null">#{name},</if>
+                <if test="time != null">#{time},</if>
+                <if test="state != null">#{state},</if>
+                <if test="reason != null">#{reason},</if>
+                <if test="classId != null">#{classId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.example.entity.Awol">
+        update awol
+        <set>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="time != null">
+                time = #{time},
+            </if>
+            <if test="state != null">
+                state = #{state},
+            </if>
+            <if test="reason != null">
+                reason = #{reason},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId},
+            </if>
+        </set>
+        where id = #{id} 
+    </update>
+
+
+    <update id="updateClassId">
+        UPDATE awol
+        SET class_id = (
+            select student.class_id
+            from student
+            where student.name = awol.name
+        )
+        WHERE EXISTS (
+                      select student.class_id
+                      from student
+                      where student.name = awol.name
+                  )
+    </update>
+
+</mapper>
