@@ -87,9 +87,17 @@ public class StudentService {
     }
 
 
-    public List<Student> findAll() {
-
-        return studentMapper.findAll();
+    public List<Student> findAll(String role,Integer classId) {
+        System.out.println("role的值"+role);
+        if(RoleEnum.TEACHER.toString().equals(role)){
+            System.out.println("进入Service层"+role);
+            List<Student> list = studentMapper.selectTeacher2(classId);
+            return list;
+        }
+        else{
+            List<Student> list = studentMapper.selectAll2();
+            return list;
+        }
     }
     /**
      * 分页查询
@@ -97,9 +105,7 @@ public class StudentService {
     public PageInfo<Student> selectPage(Params params) {
         PageHelper.startPage(params.getPageNum(), params.getPageSize());
         String current = params.getRole();
-        System.out.println("大师傅士大夫"+params.getRole());
         if(RoleEnum.TEACHER.toString().equals(current)){
-            System.out.println("的肌肤水分及");
             List<Student> list = studentMapper.selectTeacher(params);
             return PageInfo.of(list);
         }
@@ -110,9 +116,7 @@ public class StudentService {
     }
 
     public Student selectAdd(String name) {
-        System.out.println("名字2是"+name);
         Student student = studentMapper.selectAdd(name);
-        System.out.println("飞机的设计覅2"+student);
         return student;
     }
 
@@ -131,7 +135,6 @@ public class StudentService {
         String tokenData = dbStudent.getId() + "-" + RoleEnum.STUDENT.name();
         String token = TokenUtils.createToken(tokenData, dbStudent.getPassword());
         dbStudent.setToken(token);
-        System.out.println("登录信息的学生"+dbStudent.getToken());
         return dbStudent;
     }
 

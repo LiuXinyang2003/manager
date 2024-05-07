@@ -14,22 +14,21 @@
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center" v-if="user.role !='STUDENT'"></el-table-column>
-        <!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
         <el-table-column prop="name" label="请假人" show-overflow-tooltip></el-table-column>
         <el-table-column prop="time" label="请假时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="reason" label="请假原因" show-overflow-tooltip></el-table-column>
         <el-table-column prop="className" label="所属班级" show-overflow-tooltip></el-table-column>
         <el-table-column prop="state" label="请假状态" show-overflow-tooltip></el-table-column>
         <el-table-column label="审核" show-overflow-tooltip v-if="user.role !='STUDENT'">
-          <template v-slot="scope">
-            <el-button type="success" @click="changeState(scope.row,'审核通过')" :disabled="scope.row.state!=='待审核'">
-              审核通过
-            </el-button>
-            <el-button type="danger" @click="changeState(scope.row,'审核不通过')"
-                       :disabled="scope.row.state!=='待审核'">审核不通过
-            </el-button>
-          </template>
-        </el-table-column>
+        <template v-slot="scope">
+          <el-button type="success" @click="changeState(scope.row,'审核通过')" :disabled="scope.row.state!=='待审核'">
+            审核通过
+          </el-button>
+          <el-button type="danger" @click="changeState(scope.row,'审核不通过')"
+                     :disabled="scope.row.state!=='待审核'">审核不通过
+          </el-button>
+        </template>
+      </el-table-column>
 
         <el-table-column label="操作" width="180" align="center" v-if="user.role !='STUDENT'">
           <template v-slot="scope">

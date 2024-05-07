@@ -25,9 +25,12 @@
         order by student.id desc
     </select>
 
-    <select id="findAll">
-        select *
-        from student;
+    <select id="findAll" resultType="com.example.entity.Student">
+        select student.*, college.name as collegeName,speciality.name as specialityName,classes.name as className
+        from student
+        left join college on student.college_id = college.id
+        left join speciality on student.speciality_id = speciality.id
+        left join classes on student.class_id = classes.id
     </select>
 
 
@@ -52,6 +55,29 @@
         <where>
             student.class_id =#{params.classId}
             <if test="params.name != null and params.name != ''" > and student.name like concat('%', #{params.name}, '%')</if>
+        </where>
+        order by student.id desc
+    </select>
+
+
+
+    <select id="selectAll2" resultType="com.example.entity.Student">
+        select student.*, college.name as collegeName,speciality.name as specialityName,classes.name as className
+        from student
+        left join college on student.college_id = college.id
+        left join speciality on student.speciality_id = speciality.id
+        left join classes on student.class_id = classes.id
+        order by student.id desc
+    </select>
+
+    <select id="selectTeacher2" resultType="com.example.entity.Student">
+        select student.*, college.name as collegeName,speciality.name as specialityName,classes.name as className
+        from student
+        left join college on student.college_id = college.id
+        left join speciality on student.speciality_id = speciality.id
+        left join classes on student.class_id = classes.id
+        <where>
+            student.class_id =#{classId}
         </where>
         order by student.id desc
     </select>

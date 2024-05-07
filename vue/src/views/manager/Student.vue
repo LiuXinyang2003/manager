@@ -6,9 +6,9 @@
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
 
-    <div class="operation" v-if="user.role =='ADMIN'">
-      <el-button type="primary" plain @click="handleAdd">新增</el-button>
-      <el-button type="danger" plain @click="delBatch">批量删除</el-button>
+    <div class="operation" v-if="user.role !='STUDENT'">
+      <el-button type="primary" plain @click="handleAdd" v-if="user.role =='ADMIN'">新增</el-button>
+      <el-button type="danger" plain @click="delBatch" v-if="user.role =='ADMIN'">批量删除</el-button>
       <el-button type="success" plain @click="exp()">导出报表</el-button>
     </div>
 
@@ -38,17 +38,17 @@
         </el-table-column>
       </el-table>
 
-      <div class="pagination">
-        <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="params.pageNum"
-            :page-sizes="[5, 10, 20]"
-            :page-size="params.pageSize"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="total">
-        </el-pagination>
-      </div>
+<div class="pagination">
+  <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="params.pageNum"
+      :page-sizes="[5, 10, 20]"
+      :page-size="params.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total">
+  </el-pagination>
+</div>
     </div>
 
     <el-dialog title="学生" :visible.sync="fromVisible" width="40%" :close-on-click-modal="false" destroy-on-close>
@@ -278,7 +278,24 @@ export default {
     },
     exp(){
       let user = localStorage.getItem("xm-user")
-      location.href = 'http://localhost:8028/student/export?token=' +JSON.parse(user).token
+      let token = JSON.parse(user).token
+      console.log("token的值为"+token)
+      this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
+      this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
+      this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
+      // let queryParams = new URLSearchParams(this.params).toString();
+      // this.$request.get('/student/export',{
+      //   params:{
+      //     token:token
+      //   }
+      // }).then(res =>{
+      //   if(res.code==='200'){
+      //     this.$message.success('操作成功')
+      //   }else{
+      //     this.$message.error(res.msg)
+      //   }
+      // })
+      location.href = 'http://localhost:9090/student/export?token=' +token+'&'+"role="+this.params.role+'&'+"classId="+this.params.classId
     }
   }
 }

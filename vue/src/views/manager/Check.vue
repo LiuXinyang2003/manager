@@ -14,7 +14,6 @@
     <div class="table">
       <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
         <el-table-column type="selection" width="55" align="center"></el-table-column>
-        <!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
         <el-table-column prop="name" label="签到主题" show-overflow-tooltip></el-table-column>
         <el-table-column prop="start" label="签到时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="overtime" label="截止时间" show-overflow-tooltip></el-table-column>

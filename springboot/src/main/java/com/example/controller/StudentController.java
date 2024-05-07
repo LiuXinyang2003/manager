@@ -129,16 +129,24 @@ public class StudentController {
 
     @GetMapping("/selectAdd")
     public Result selectAdd(@RequestParam String name) {
-        System.out.println("名字1"+name);
         Student student = studentService.selectAdd(name);
-        System.out.println("飞机的设计覅1"+student);
         return Result.success(student);
     }
 
 
     @GetMapping("/export")
-    public Result export(HttpServletResponse response) throws IOException {
-        List<Student> both = studentService.findAll();
+    public Result export(HttpServletResponse response,@RequestParam(value = "role",required = true) String role, @RequestParam(value = "classId",required = false,defaultValue = "0")  String classIdStr) throws IOException {
+        Integer classId;
+        try {
+            // 尝试将classIdStr转换为Integer
+            classId = Integer.parseInt(classIdStr);
+        } catch (NumberFormatException e) {
+            // 如果转换失败（例如，当classIdStr是"null"时），则使用默认值0
+            classId = 0;
+        }
+        System.out.println("role的con值"+role);
+        System.out.println("classId的con值"+role);
+        List<Student> both = studentService.findAll(role,classId);
 //        if(CollectionUtil.isEmpty(both)){
 //            throw new CustomException("未找到数据");
 //        }
@@ -153,7 +161,7 @@ public class StudentController {
         ExcelWriter wr = ExcelUtil.getWriter(true);
         wr.write(list,true);
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
-        response.setHeader("Content-Disposition","attachment;filename=type.xlsx");
+        response.setHeader("Content-Disposition","attachment;filename=student.xlsx");
         ServletOutputStream out = response.getOutputStream();
         wr.flush(out, true);
         wr.close();

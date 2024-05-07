@@ -45,6 +45,10 @@ public interface StudentMapper {
 
     List<Student> selectTeacher(@Param("params") Params params);
 
+    List<Student> selectAll2();
+
+    List<Student> selectTeacher2(Integer classId);
+
 
 
     @Select("select * from student where username = #{username}")
