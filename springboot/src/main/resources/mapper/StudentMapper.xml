@@ -115,7 +115,6 @@
                 <if test="collegeId != null">college_id,</if>
                 <if test="specialityId != null">speciality_id,</if>
                 <if test="classId != null">class_id,</if>
-
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>

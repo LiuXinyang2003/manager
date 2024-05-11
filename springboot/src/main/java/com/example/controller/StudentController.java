@@ -13,6 +13,7 @@ import com.example.service.StudentService;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.servlet.ServletOutputStream;
@@ -169,6 +170,23 @@ public class StudentController {
         return Result.success();
 
     }
+
+    @PostMapping("/upload")
+    public Result upload(MultipartFile file) throws IOException {
+        List<Student> infoList = ExcelUtil.getReader(file.getInputStream()).readAll(Student.class);
+        if (!CollectionUtil.isEmpty(infoList)) {
+            for (Student student : infoList) {
+                try {
+
+                    studentService.add(student);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return Result.success();
+    }
+
 
 
 }

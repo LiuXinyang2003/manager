@@ -1,5 +1,7 @@
 package com.example.entity;
 
+import cn.hutool.core.annotation.Alias;
+
 import java.io.Serializable;
 
 /**
@@ -15,8 +17,10 @@ public class Student extends Account implements Serializable {
     /** 密码 */
     private String password;
     /** 姓名 */
+    @Alias("姓名")
     private String name;
     /** 性别 */
+    @Alias("性别")
     private String gender;
     /** 电话 */
     private String phone;
@@ -31,6 +35,7 @@ public class Student extends Account implements Serializable {
     private Integer classId;
     private String collegeName;
     private String specialityName;
+    @Alias("班级")
     private String className;
 
     @Override

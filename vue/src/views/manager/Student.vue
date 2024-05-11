@@ -10,6 +10,13 @@
       <el-button type="primary" plain @click="handleAdd" v-if="user.role =='ADMIN'">新增</el-button>
       <el-button type="danger" plain @click="delBatch" v-if="user.role =='ADMIN'">批量删除</el-button>
       <el-button type="success" plain @click="exp()">导出报表</el-button>
+
+      <el-upload
+          action="http://localhost:9090/student/upload" style="display: inline-block; margin-left: 10px"
+          :show-file-list="false"
+          :on-success="successUploadTable">
+        <el-button type="primary">导入报表</el-button>
+      </el-upload>
     </div>
 
     <div class="table">
@@ -69,6 +76,8 @@
           >
             <el-button type="primary">上传头像</el-button>
           </el-upload>
+
+
         </el-form-item>
         <el-form-item label="性别" prop="name">
           <template>
@@ -146,17 +155,15 @@ export default {
     // this.getData()
   },
   methods: {
-    // getData(){
-    //   this.$request.get('/student/getData').then(res =>{
-    //     this.newMap=res;
-    //     console.log(res)
-    //   })
-    // },
-    // gds(){
-    //   this.$request.get('/student/getTotal1').then(res =>{
-    //     console.log("遮体的"+res)
-    //   })
-    // },
+    successUploadTable(res, file, fileList){
+      if (res.code === '200') {
+        this.$message.success("批量导入成功")
+        this.load(1)
+      } else {
+        this.$message.error(res.msg)
+      }
+    },
+
 
     loadCollege(){
       this.$request.get('/college/selectAll').then(res =>{
@@ -237,7 +244,6 @@ export default {
         this.$request.delete('/student/delete/batch', {data: this.ids}).then(res => {
           if (res.code === '200') {   // 表示操作成功
             this.$message.success('操作成功')
-            con
             this.load(1)
           } else {
             this.$message.error(res.msg)  // 弹出错误的信息
