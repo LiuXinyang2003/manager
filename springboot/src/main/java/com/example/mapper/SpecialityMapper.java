@@ -1,5 +1,6 @@
 package com.example.mapper;
 
+import com.example.entity.Classes;
 import com.example.entity.Params;
 import com.example.entity.Speciality;
 import org.apache.ibatis.annotations.Param;
@@ -40,4 +41,5 @@ public interface SpecialityMapper {
 
     List<Speciality> getMajorsByCollege(Speciality speciality);
 
+    List<Classes> getClassesBySpecialityId(Integer specialityId);
 }

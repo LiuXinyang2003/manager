@@ -106,9 +106,6 @@ export default {
     this.load(1)
     this.loadClass()
     this.loadStudent()
-    console.log(this.getCurrentDateTime())
-    console.log(this.currentDateTime)
-
   },
   methods: {
     getCurrentDateTime() {
@@ -128,11 +125,8 @@ export default {
 
       this.currentDateTime = formattedDateTime;
       const a = "2024-04-22 12:20:51";
-      console.log(a)
       const dateA = new Date(formattedDateTime);
       const dateB = new Date(a);
-      console.log(dateA.getTime())
-      console.log(dateB.getTime())
       // 比较两个 Date 对象的毫秒值
       if (dateA.getTime() < dateB.getTime()) {
         return '时间A早于时间B';
@@ -169,8 +163,6 @@ export default {
           this.fromVisible = false
 
           this.newRow=res.data;
-          console.log(res.data)
-          console.log(this.newRow)
         } else {
           this.$message.error(res.msg)  // 弹出错误的信息
         }
@@ -185,7 +177,6 @@ export default {
         // 注意：确保 this.studentData 和 this.form 在此时是最新的
 
         this.signIn2(this.studentData, this.newRow);
-        console.log(this.newRow.state)
         const now = new Date();
         const formattedDateTime = now.getFullYear() + '-' +
             ('0' + (now.getMonth() + 1)).slice(-2) + '-' +
@@ -195,8 +186,6 @@ export default {
             ('0' + now.getSeconds()).slice(-2);
         const dateA = new Date(formattedDateTime);
         const dateB = new Date(this.newRow.overtime);
-        console.log(dateA.getTime())
-        console.log(dateB.getTime())
         // 比较两个 Date 对象的毫秒值
         if (dateA.getTime() > dateB.getTime()) {
           this.overTime()

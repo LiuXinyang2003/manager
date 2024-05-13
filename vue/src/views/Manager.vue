@@ -56,7 +56,6 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
-            <el-menu-item index="/admin" v-if="user.role =='ADMIN'">管理员信息</el-menu-item>
             <el-menu-item index="/teacher" v-if="user.role =='ADMIN'">教师信息</el-menu-item>
             <el-menu-item index="/student">学生信息</el-menu-item>
           </el-submenu>

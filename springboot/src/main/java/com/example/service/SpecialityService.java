@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.entity.Classes;
 import com.example.entity.College;
 import com.example.entity.Params;
 import com.example.entity.Speciality;
@@ -87,4 +88,8 @@ public class SpecialityService {
         return PageInfo.of(list);
     }
 
+    public List<Classes> getClassesBySpecialityId(Integer specialityId) {
+        List<Classes> list = specialityMapper.getClassesBySpecialityId(specialityId);
+        return list;
+    }
 }

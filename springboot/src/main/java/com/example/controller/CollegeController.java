@@ -3,6 +3,7 @@ package com.example.controller;
 import com.example.common.Result;
 import com.example.entity.College;
 import com.example.entity.Params;
+import com.example.entity.Speciality;
 import com.example.service.CollegeService;
 import com.github.pagehelper.PageInfo;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,12 @@ public class CollegeController {
     @Resource
     private CollegeService collegeService;
 
+
+    @GetMapping("/{collegeId}/specialties")
+    public Result getSpecialtiesByCollegeId(@PathVariable Integer collegeId) {
+        List<Speciality> specialties = collegeService.getSpecialtiesByCollegeId(collegeId);
+        return Result.success(specialties);
+    }
     /**
      * 新增
      */

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.example.entity.Account;
 import com.example.entity.College;
 import com.example.entity.Params;
+import com.example.entity.Speciality;
 import com.example.mapper.CollegeMapper;
 import com.example.utils.TokenUtils;
 import com.github.pagehelper.PageHelper;
@@ -79,5 +80,10 @@ public class CollegeService {
         PageHelper.startPage(params.getPageNum(),params.getPageSize());
         List<College> list = collegeMapper.findBySearch(params);
         return PageInfo.of(list);
+    }
+
+    public List<Speciality> getSpecialtiesByCollegeId(Integer collegeId) {
+        List<Speciality> list = collegeMapper.getSpecialtiesByCollegeId(collegeId);
+        return list;
     }
 }

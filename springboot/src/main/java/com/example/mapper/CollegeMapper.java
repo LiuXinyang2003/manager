@@ -2,6 +2,7 @@ package com.example.mapper;
 
 import com.example.entity.College;
 import com.example.entity.Params;
+import com.example.entity.Speciality;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -37,4 +38,6 @@ public interface CollegeMapper {
     List<College> selectAll();
 
     List<College> findBySearch(@Param("params") Params params);
+
+    List<Speciality> getSpecialtiesByCollegeId(Integer collegeId);
 }

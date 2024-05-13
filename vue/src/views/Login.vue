@@ -59,8 +59,6 @@ export default {
           // 验证通过
           this.$request.post('/login', this.form).then(res => {
             if (res.code === '200') {
-              console.log(res.data)
-              console.log(JSON.stringify(res.data))
               localStorage.setItem("xm-user", JSON.stringify(res.data))  // 存储用户数据
               this.$router.push('/')  // 跳转主页
               this.$message.success('登录成功')

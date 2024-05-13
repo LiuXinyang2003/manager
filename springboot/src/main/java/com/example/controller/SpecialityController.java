@@ -1,6 +1,7 @@
 package com.example.controller;
 
 import com.example.common.Result;
+import com.example.entity.Classes;
 import com.example.entity.College;
 import com.example.entity.Params;
 import com.example.entity.Speciality;
@@ -21,6 +22,14 @@ public class SpecialityController {
     @Resource
     private SpecialityService specialityService;
 
+
+
+
+    @GetMapping("/{specialityId}/classes")
+    public Result getClassesBySpecialityId(@PathVariable Integer specialityId) {
+        List<Classes> classes = specialityService.getClassesBySpecialityId(specialityId);
+        return Result.success(classes);
+    }
     /**
      * 新增
      */

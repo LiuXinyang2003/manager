@@ -8,6 +8,16 @@
         id,name,content,college_id
     </sql>
 
+    <select id="getClassesBySpecialityId" resultType="com.example.entity.Classes">
+        select *
+        from classes
+        <where>
+            speciality_id = #{specialityId}
+        </where>
+        order by id desc
+    </select>
+
+
     <select id="selectAll" resultType="com.example.entity.Speciality">
         select speciality.*, college.name as collegeName
         from speciality
@@ -23,7 +33,7 @@
         from speciality
         left join college on speciality.college_id = college.id
         <where>
-            <if test="name != null and name != ''" > and speciality.name like concat('%', #{name}, '%')</if>
+
         </where>
         order by id desc
     </select>

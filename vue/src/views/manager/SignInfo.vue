@@ -216,11 +216,6 @@ export default {
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
       this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
-      if (localStorage.getItem("xm-user")) {
-        console.log("Username from localStorage:",JSON.parse(localStorage.getItem("xm-user")).role);
-      } else {
-        console.log("The username key does not exist in localStorage.");
-      }
       this.$request.get('/signInfo/selectPage', {
         params: this.params
       }).then(res => {

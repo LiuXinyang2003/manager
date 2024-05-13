@@ -86,18 +86,18 @@
           </template>
         </el-form-item>
         <el-form-item label="学院" prop="name">
-          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%">
-            <el-option v-for="item in collegeData" :label="item.name" :value="item.id"></el-option>
+          <el-select v-model="form.collegeId" placeholder="请选择学院" style="width: 100%" @change="loadSpecialtiesAndClasses">
+            <el-option v-for="college in collegeData" :key="college.id" :label="college.name" :value="college.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="专业" prop="name">
           <el-select v-model="form.specialityId" placeholder="请选择专业" style="width: 100%">
-            <el-option v-for="item in specialityData" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in specialityData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="班级" prop="name">
           <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
-            <el-option v-for="item in classData" :label="item.name" :value="item.id"></el-option>
+            <el-option v-for="item in classData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
       </el-form-item>
 
@@ -135,7 +135,10 @@ export default {
       user: JSON.parse(localStorage.getItem('xm-user') || '{}'),
       rules: {
         username: [
-          {required: true, message: '请输入账号', trigger: 'blur'},
+          {required: true, message: '请输入用户名', trigger: 'blur'},
+        ],
+        name: [
+          {required: true, message: '请输入姓名', trigger: 'blur'},
         ]
       },
       ids: [],
@@ -149,10 +152,21 @@ export default {
   created() {
     this.load(1),
     this.loadCollege()
-    this.loadSpeciality()
-    this.loadClasses()
+
     // this.gds()
     // this.getData()
+  },
+  watch: {
+    'form.collegeId': function(newVal) {
+      if (newVal) {
+        this.loadSpecialtiesAndClasses();
+      }
+    },
+    'form.specialityId': function(newVal) {
+      if (newVal) {
+        this.loadClasses();
+      }
+    }
   },
   methods: {
     successUploadTable(res, file, fileList){
@@ -174,24 +188,60 @@ export default {
         }
       })
     },
-    loadSpeciality(){
-      this.$request.get('/speciality/selectAll').then(res =>{
-        if(res.code === '200'){
-          this.specialityData=res.data
-        }else{
-          this.$message.error(res.msg)
-        }
-      })
+    loadSpecialtiesAndClasses() {
+      if (this.form.collegeId) {
+        // 发送请求获取对应学院的专业列表
+        this.$request.get(`/college/${this.form.collegeId}/specialties`).then(response => {
+          this.specialityData = response.data;
+          // 如果只有一个专业，则自动选择该专业并加载班级
+          // if (this.specialityData.length === 0) {
+          //   this.form.specialityId = null
+          // }
+          // if (this.specialityData.length === 1) {
+          //   this.form.specialityId = this.specialityData[0].id;
+          //   this.loadClasses();
+          // }
+          // // 重置班级选择
+          // this.form.classId = null;
+          // this.classData = [];
+        }).catch(error => {
+          console.error('加载专业列表失败:', error);
+        });
+      }
     },
-    loadClasses(){
-      this.$request.get('/classes/selectAll').then(res =>{
-        if(res.code === '200'){
-          this.classData=res.data
-        }else{
-          this.$message.error(res.msg)
-        }
-      })
+
+    loadClasses() {
+      if (this.form.specialityId) {
+        // 发送请求获取对应专业的班级列表
+        this.$request.get(`/speciality/${this.form.specialityId}/classes`).then(response => {
+          this.classData = response.data;
+          // 如果只有一个班级，则自动选择该班级
+          // if (this.classData.length === 1) {
+          //   this.form.classId = this.classData[0].id;
+          // }
+        }).catch(error => {
+          console.error('加载班级列表失败:', error);
+        });
+      }
     },
+    // loadSpeciality(){
+    //   this.$request.get('/speciality/selectAll').then(res =>{
+    //     if(res.code === '200'){
+    //       this.specialityData=res.data
+    //     }else{
+    //       this.$message.error(res.msg)
+    //     }
+    //   })
+    // },
+    // loadClasses(){
+    //   this.$request.get('/classes/selectAll').then(res =>{
+    //     if(res.code === '200'){
+    //       this.classData=res.data
+    //     }else{
+    //       this.$message.error(res.msg)
+    //     }
+    //   })
+    // },
     handleAdd() {   // 新增数据
       this.form = {}  // 新增数据的时候清空数据
       this.fromVisible = true   // 打开弹窗
@@ -212,6 +262,7 @@ export default {
               this.$message.success('保存成功')
               this.load(1)
               this.fromVisible = false
+              this.form = {}
             } else {
               this.$message.error(res.msg)  // 弹出错误的信息
             }
@@ -257,7 +308,6 @@ export default {
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
       this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
-      console.log(this.params)
       this.$request.get('/student/selectPage', {
         params: this.params
       }).then(res => {
@@ -289,18 +339,6 @@ export default {
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
       this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
-      // let queryParams = new URLSearchParams(this.params).toString();
-      // this.$request.get('/student/export',{
-      //   params:{
-      //     token:token
-      //   }
-      // }).then(res =>{
-      //   if(res.code==='200'){
-      //     this.$message.success('操作成功')
-      //   }else{
-      //     this.$message.error(res.msg)
-      //   }
-      // })
       location.href = 'http://localhost:9090/student/export?token=' +token+'&'+"role="+this.params.role+'&'+"classId="+this.params.classId
     }
   }

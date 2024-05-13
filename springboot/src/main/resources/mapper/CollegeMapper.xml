@@ -8,6 +8,20 @@
         id,name,content
     </sql>
 
+
+
+
+    <select id="getSpecialtiesByCollegeId" resultType="com.example.entity.Speciality">
+        select *
+        from speciality
+        <where>
+            college_id = #{colleageId}
+        </where>
+        order by id desc
+    </select>
+
+
+
     <select id="selectAll" resultType="com.example.entity.College">
         select
         <include refid="Base_Column_List" />
