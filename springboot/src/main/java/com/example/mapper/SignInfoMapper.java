@@ -15,7 +15,6 @@ public interface SignInfoMapper {
     */
     int insert(SignInfo signInfo);
 
-    int signAdd(SignInfo signInfo);
 
 
     /**
@@ -45,5 +44,11 @@ public interface SignInfoMapper {
 
     List<SignInfo> selectTeacher(@Param("params") Params params);
 
+    List<SignInfo> selectTeacher1(@Param("params") Params params);
 
+    List<SignInfo> selectAll2(String name,String name2,String classNameP);
+
+    List<SignInfo> selectTeacher2(Integer classId,String name,String name2);
+
+    List<SignInfo> selectTeacher11(String role,String name,String name2,String username);
 }

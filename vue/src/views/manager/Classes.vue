@@ -12,14 +12,19 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe  @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+      <el-table :data="tableData" ref="table" strip @selection-change="handleSelectionChange" :row-key="getRowKeys">
+        <el-table-column type="selection" width="55" align="center" :reserve-selection="true"></el-table-column>
         <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>
         <el-table-column prop="name" label="班级名称" show-overflow-tooltip></el-table-column>
         <el-table-column prop="content" label="班级描述" show-overflow-tooltip></el-table-column>
         <el-table-column prop="specialityName" label="所属专业" show-overflow-tooltip></el-table-column>
         <el-table-column prop="teacherName" label="班主任" show-overflow-tooltip></el-table-column>
         <el-table-column prop="total" label="班级人数" show-overflow-tooltip></el-table-column>
+        <el-table-column label="详细" width="180" align="center">
+          <template v-slot="scope">
+            <el-button plain type="primary" @click="lookHan(scope.row.id)" size="mini">查看</el-button>
+          </template>
+        </el-table-column>
         <el-table-column label="操作" width="180" align="center">
           <template v-slot="scope">
             <el-button plain type="primary" @click="handleEdit(scope.row)" size="mini">编辑</el-button>
@@ -111,6 +116,17 @@ export default {
     this.loadTeacher()
   },
   methods: {
+    lookHan(value){
+      this.$router.push({
+        name:'PerStudent',
+        params:{
+          myParam:value
+        }
+      });
+    },
+    getRowKeys(row) {
+      return row.id;
+    },
     updateClassTotal(){
       this.$request.put('/classes/updateClassTotal',this.form).then(res => {
         if (res.code === '200') {  // 表示成功保存

@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.SignInfoMapper">
 
     <sql id="Base_Column_List">
-        id,name,start,overtime,state,teacher_id
+        id,name,start,overtime,state,role,username
     </sql>
 
 
@@ -14,7 +14,7 @@
         from signinfo
         left join classes on classes.id = signinfo.class_id
         <where>
-            signinfo.studentname=#{params.username}
+            signinfo.studentname=#{params.studentName}
             <if test="params.name != null and params.name != ''"> and signinfo.name like concat('%',#{params.name},'%')</if>
         </where>
         order by id desc
@@ -32,6 +32,53 @@
         order by id desc
     </select>
 
+    <select id="selectTeacher1" resultType="com.example.entity.SignInfo">
+        select signinfo.*,classes.name as className
+        from signinfo
+        left join classes on classes.id = signinfo.class_id
+        <where>
+            signinfo.role = #{params.role} and
+            signinfo.username = #{params.username}
+            <if test="params.name != null and params.name != ''"> and signinfo.name like concat('%',#{params.name},'%')</if>
+            <if test="params.name2 != null and params.name2 != ''"> and signinfo.studentname like concat('%',#{params.name2},'%')</if>
+        </where>
+        order by id desc
+    </select>
+
+    <select id="selectAll2" resultType="com.example.entity.SignInfo">
+        select signinfo.*,classes.name as className
+        from signinfo
+                 left join classes on signinfo.class_id = classes.id
+        <where>
+            <if test="name != null and name != ''"> and signinfo.name like concat('%',#{name},'%')</if>
+            <if test="name2 != null and name2 != ''"> and signinfo.studentname like concat('%',#{name2},'%')</if>
+            <if test="classNameP != null and classNameP != ''"> and classes.name like concat('%',#{classNameP},'%')</if>
+        </where>
+    </select>
+
+    <select id="selectTeacher2" resultType="com.example.entity.SignInfo">
+        select signinfo.*,classes.name as className
+        from signinfo
+        left join classes on signinfo.class_id = classes.id
+        <where>
+            signinfo.class_id =#{classId}
+            <if test="name != null and name != ''"> and signinfo.name like concat('%',#{name},'%')</if>
+            <if test="name2 != null and name2 != ''"> and signinfo.studentname like concat('%',#{name2},'%')</if>
+        </where>
+    </select>
+
+    <select id="selectTeacher11" resultType="com.example.entity.SignInfo">
+        select signinfo.*,classes.name as className
+        from signinfo
+        left join classes on signinfo.class_id = classes.id
+        <where>
+            signinfo.role =#{role} and
+            signinfo.username =#{username}
+            <if test="name != null and name != ''"> and signinfo.name like concat('%',#{name},'%')</if>
+            <if test="name2 != null and name2 != ''"> and signinfo.studentname like concat('%',#{name2},'%')</if>
+        </where>
+    </select>
+
     <select id="selectAll" resultType="com.example.entity.SignInfo">
         select signinfo.*,classes.name as className
         from signinfo
@@ -39,6 +86,7 @@
         <where>
             <if test="params.name != null and params.name != ''"> and signinfo.name like concat('%',#{params.name},'%')</if>
             <if test="params.name2 != null and params.name2 != ''"> and signinfo.studentname like concat('%',#{params.name2},'%')</if>
+            <if test="params.classNameP != null and params.classNameP != ''"> and classes.name like concat('%',#{params.classNameP},'%')</if>
 
         </where>
         order by id desc
@@ -73,7 +121,8 @@
                 <if test="start != null">start,</if>
                 <if test="overtime != null">overtime,</if>
                 <if test="state != null">state,</if>
-                <if test="teacherId != null">teacher_id,</if>
+                <if test="username != null">username,</if>
+                <if test="role != null">role,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
                 <if test="id != null">#{id},</if>
@@ -81,7 +130,8 @@
                 <if test="start != null">#{start},</if>
                 <if test="overtime != null">#{overtime},</if>
                 <if test="state != null">#{state},</if>
-                <if test="teacherId != null">#{teacherId},</if>
+                <if test="username != null">#{username},</if>
+                <if test="role != null">#{role},</if>
         </trim>
     </insert>
 

@@ -2,6 +2,7 @@ package com.example.controller;
 
 import cn.hutool.core.date.DateField;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.json.JSON;
 import com.example.common.Result;
 import com.example.entity.*;
 import com.example.service.CheckService;
@@ -30,6 +31,7 @@ public class CheckController {
     public Result add(@RequestBody Check check) {
         if (check.getId() == null) {
             check.setUsername(TokenUtils.getCurrentUser().getUsername());
+            check.setRole(TokenUtils.getCurrentUser().getRole());
         }
         checkService.add(check);
         return Result.success();
@@ -44,6 +46,9 @@ public class CheckController {
 
     @PostMapping("/signIn2")
     public Result sigIn2(@RequestBody SignInData signInData) {
+        signInData.getCheck().setUsername(TokenUtils.getCurrentUser().getUsername());
+        signInData.getCheck().setRole(TokenUtils.getCurrentUser().getRole());
+        System.out.println("班级id是"+signInData.getCheck().getClassId());
         checkService.signAdd2(signInData);
         return Result.success();
     }
@@ -78,14 +83,6 @@ public class CheckController {
         return Result.success(newRow);
     }
 
-    @Transactional
-    @PutMapping("/updateClassTotal")
-    public Result updateClassTotal() {
-        System.out.println("哈哈哈哈哈哈哈哈哈");
-        checkService.updateClassTotal();
-
-        return Result.success();
-    }
 
     @PutMapping("/updateClassId")
     public Result updateClassId() {

@@ -12,14 +12,12 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center"></el-table-column>
+      <el-table :data="tableData" ref="table" strip @selection-change="handleSelectionChange" :row-key="getRowKeys">
+        <el-table-column type="selection" width="55" align="center" :reserve-selection="true"></el-table-column>
         <el-table-column prop="name" label="签到主题" show-overflow-tooltip></el-table-column>
         <el-table-column prop="start" label="签到时间" show-overflow-tooltip></el-table-column>
         <el-table-column prop="overtime" label="截止时间" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="className" label="班级" show-overflow-tooltip></el-table-column>
-        <el-table-column prop="total" label="班级人数" show-overflow-tooltip>
-        </el-table-column>
+        <el-table-column prop="className" label="班级" show-overflow-tooltip v-if="user.role =='ADMIN' || user.role =='TEACHER1'"></el-table-column>>
         <el-table-column prop="state" label="发起签到状态" show-overflow-tooltip></el-table-column>
         <el-table-column label="发起签到" show-overflow-tooltip v-if="user.role !='STUDENT'">
           <template v-slot="scope">
@@ -59,6 +57,11 @@
 <!--                  </el-form-item>-->
                 <el-form-item prop="name" label="签到主题">
                   <el-input v-model="form.name" autocomplete="off"></el-input>
+                </el-form-item>
+                <el-form-item label="班级" prop="name" v-if="user.role =='ADMIN' || user.role =='TEACHER1'">
+                  <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
+                    <el-option v-for="item in classData" :key="item.id" :label="item.name" :value="item.id"></el-option>
+                  </el-select>
                 </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -108,6 +111,9 @@ export default {
     this.loadStudent()
   },
   methods: {
+    getRowKeys(row) {
+      return row.id;
+    },
     getCurrentDateTime() {
       // 创建一个Date对象表示当前日期和时间
       const now = new Date();
@@ -175,7 +181,7 @@ export default {
         // lei 方法成功更新数据库后，可以在这里执行后续操作
         // 如果需要，也可以在这里再次调用 signIn2 方法
         // 注意：确保 this.studentData 和 this.form 在此时是最新的
-
+        console.log("我的名字"+this.newRow.classId)
         this.signIn2(this.studentData, this.newRow);
         const now = new Date();
         const formattedDateTime = now.getFullYear() + '-' +
@@ -228,15 +234,15 @@ export default {
         }
       })
     },
-    updateClassTotal(){
-      this.$request.put('/check/updateClassTotal').then(res => {
-      if (res.code === '200') {  // 表示成功保存
-        this.load(1)
-      } else {
-        this.$message.error(res.msg)  // 弹出错误的信息
-      }
-      })
-    },
+    // updateClassTotal(){
+    //   this.$request.put('/check/updateClassTotal').then(res => {
+    //   if (res.code === '200') {  // 表示成功保存
+    //     this.load(1)
+    //   } else {
+    //     this.$message.error(res.msg)  // 弹出错误的信息
+    //   }
+    //   })
+    // },
     updateClassId(){
       this.$request.put('/check/updateClassId').then(res => {
         if (res.code === '200') {  // 表示成功保存
@@ -272,7 +278,6 @@ export default {
 
               this.$message.success('保存成功')
               this.updateClassId()
-              this.updateClassTotal()
               this.load(1)
               this.fromVisible = false
             } else {
@@ -320,6 +325,7 @@ export default {
       if (pageNum) this.params.pageNum = pageNum
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
+      this.params.username = JSON.parse(localStorage.getItem("xm-user")).username
       this.$request.get('/check/selectPage', {
         params: this.params
       }).then(res => {

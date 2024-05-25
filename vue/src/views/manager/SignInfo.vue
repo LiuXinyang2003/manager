@@ -2,6 +2,7 @@
   <div>
     <div class="search">
       <el-input placeholder="请输入签到主题" style="width: 200px" v-model="params.name"></el-input>
+      <el-input placeholder="请输入班级" style="width: 200px" v-model="params.classNameP"></el-input>
       <el-input placeholder="请输入名字" style="width: 200px" v-model="params.name2" v-if="user.role !='STUDENT'"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
@@ -14,8 +15,8 @@
     </div>
 
     <div class="table">
-      <el-table :data="tableData" stripe @selection-change="handleSelectionChange">
-        <el-table-column type="selection" width="55" align="center" v-if="user.role !='STUDENT'"></el-table-column>
+      <el-table :data="tableData" ref="table" strip @selection-change="handleSelectionChange" :row-key="getRowKeys">
+        <el-table-column type="selection" width="55" align="center" v-if="user.role !='STUDENT'" :reserve-selection="true"></el-table-column>
         <!--        <el-table-column prop="id" label="序号" width="80" align="center" sortable></el-table-column>-->
         <el-table-column prop="name" label="签到主题" show-overflow-tooltip></el-table-column>
         <el-table-column prop="studentName" label="学生名" show-overflow-tooltip v-if="user.role !='STUDENT'"></el-table-column>
@@ -67,6 +68,8 @@ export default {
         name: '',
         name2: '',
         username: '',
+        studentName: '',
+        classNameP: '',
         role: "",
         pageNum: 1,   // 当前的页码
         pageSize: 10,  // 每页显示的个数
@@ -89,6 +92,10 @@ export default {
     this.updateClassId()
   },
   methods: {
+
+    getRowKeys(row) {
+      return row.id;
+    },
     updateClassId(){
       this.$request.put('/signInfo/updateClassId',this.form).then(res => {
         if (res.code === '200') {  // 表示成功保存
@@ -164,8 +171,7 @@ export default {
           }).then(res => {
             if (res.code === '200') {  // 表示成功保存
               this.$message.success('保存成功')
-              this.updateClassId()
-              this.updateClassTotal()
+              // this.updateClassId()
               this.load(1)
               this.fromVisible = false
             } else {
@@ -214,12 +220,12 @@ export default {
     load(pageNum) {  // 分页查询
       if (pageNum) this.params.pageNum = pageNum
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
-      this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
+      this.params.username = JSON.parse(localStorage.getItem("xm-user")).username
+      this.params.studentName = JSON.parse(localStorage.getItem("xm-user")).name
       this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
       this.$request.get('/signInfo/selectPage', {
         params: this.params
       }).then(res => {
-        // console.log(res.data)
         this.tableData = res.data?.list
         this.total = res.data?.total
       })
@@ -227,6 +233,7 @@ export default {
     reset() {
       this.params.name = null
       this.params.name2 = null
+      this.params.classNameP = null
       this.load(1)
     },
 
@@ -239,6 +246,14 @@ export default {
       this.load(1)
     },
     exp(){
+      let user = localStorage.getItem("xm-user")
+      let token = JSON.parse(user).token
+      this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
+      this.params.username = JSON.parse(localStorage.getItem("xm-user")).username
+      this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
+      location.href = 'http://localhost:9090/signInfo/export?token=' +token+'&'+"role="+this.params.role+'&'+
+          "classId="+this.params.classId+'&'+"name="+this.params.name+'&'+"name2="+this.params.name2+
+          '&'+"classNameP="+this.params.classNameP+'&'+"username="+this.params.username
     }
   }
 }

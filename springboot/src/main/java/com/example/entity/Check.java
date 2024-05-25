@@ -14,10 +14,10 @@ public class Check implements Serializable {
     private String overtime;
     private String state;
     private String username;
-    private Integer total;
     private Integer classId;
     private Integer TeacherId;
     private String className;
+    private String role;
 
     public Integer getId() {
         return id;
@@ -75,12 +75,12 @@ public class Check implements Serializable {
         this.username = username;
     }
 
-    public Integer getTotal() {
-        return total;
+    public String getRole() {
+        return role;
     }
 
-    public void setTotal(Integer total) {
-        this.total = total;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public Integer getClassId() {

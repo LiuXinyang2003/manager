@@ -42,6 +42,7 @@
         left join classes on student.class_id = classes.id
         <where>
             <if test="params.name != null and params.name != ''" > and student.name like concat('%', #{params.name}, '%')</if>
+            <if test="params.classNameP != null and params.classNameP != ''" > and classes.name like concat('%', #{params.classNameP}, '%')</if>
         </where>
         order by student.id desc
     </select>
@@ -67,7 +68,10 @@
         left join college on student.college_id = college.id
         left join speciality on student.speciality_id = speciality.id
         left join classes on student.class_id = classes.id
-        order by student.id desc
+        <where>
+            <if test="name != null and name != ''" > and student.name like concat('%', #{name}, '%')</if>
+            <if test="classNameP != null and classNameP != ''" > and classes.name like concat('%', #{classNameP}, '%')</if>
+        </where>
     </select>
 
     <select id="selectTeacher2" resultType="com.example.entity.Student">
@@ -78,6 +82,7 @@
         left join classes on student.class_id = classes.id
         <where>
             student.class_id =#{classId}
+            <if test="name != null and name != ''" > and student.name like concat('%', #{name}, '%')</if>
         </where>
         order by student.id desc
     </select>
@@ -129,6 +134,23 @@
                 <if test="classId != null">#{classId},</if>
         </trim>
     </insert>
+
+
+    <select id="selectCollegeId" resultType="Integer">
+        select college.id from college
+        where name = #{collegeName}
+    </select>
+
+    <select id="selectSpecialityId" resultType="Integer">
+        select speciality.id from speciality
+        where name = #{specialityName}
+    </select>
+
+    <select id="selectClassId" resultType="Integer">
+        select classes.id from classes
+        where name = #{className}
+    </select>
+
 
     <update id="updateById" parameterType="com.example.entity.Student">
         update student

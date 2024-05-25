@@ -6,7 +6,9 @@ public class Params {
     private String username;
     private Integer classId;
     private String role;
+    private String classNameP;
     private Integer pageNum;
+    private String studentName;
     private Integer pageSize;
 
     public String getName() {
@@ -41,6 +43,14 @@ public class Params {
         this.role = role;
     }
 
+    public String getClassNameP() {
+        return classNameP;
+    }
+
+    public void setClassNameP(String classNameP) {
+        this.classNameP = classNameP;
+    }
+
     public Integer getClassId() {
         return classId;
     }
@@ -55,6 +65,14 @@ public class Params {
 
     public void setPageNum(Integer pageNum) {
         this.pageNum = pageNum;
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
     }
 
     public Integer getPageSize() {

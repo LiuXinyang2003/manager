@@ -14,10 +14,20 @@ import java.util.List;
 */
 public interface StudentMapper {
 
+
+
+    int selectCollegeId(Student student);
+    int selectSpecialityId(Student student);
+    int selectClassId(Student student);
+
     /**
       * 新增
     */
+
+
     int insert(Student student);
+
+
 
     /**
       * 删除
@@ -45,9 +55,10 @@ public interface StudentMapper {
 
     List<Student> selectTeacher(@Param("params") Params params);
 
-    List<Student> selectAll2();
+    List<Student> selectAll2(String name,String classNameP);
 
-    List<Student> selectTeacher2(Integer classId);
+    List<Student> selectTeacher2(Integer classId,String name);
+
 
 
 

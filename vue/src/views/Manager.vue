@@ -56,7 +56,8 @@
             <template slot="title">
               <i class="el-icon-menu"></i><span>用户管理</span>
             </template>
-            <el-menu-item index="/teacher" v-if="user.role =='ADMIN'">教师信息</el-menu-item>
+            <el-menu-item index="/teacher" v-if="user.role =='ADMIN'">班主任信息</el-menu-item>
+            <el-menu-item index="/teacher1" v-if="user.role =='ADMIN'">任课老师信息</el-menu-item>
             <el-menu-item index="/student">学生信息</el-menu-item>
           </el-submenu>
           <el-submenu index="function">
@@ -64,7 +65,7 @@
               <i class="el-icon-menu"></i><span>基础功能</span>
             </template>
             <el-menu-item index="/check" v-if="user.role !='STUDENT'">发起签到</el-menu-item>
-            <el-menu-item index="/awol">请假</el-menu-item>
+            <el-menu-item index="/awol" v-if="user.role !='TEACHER1'">请假</el-menu-item>
             <el-menu-item index="/signInfo">签到信息</el-menu-item>
           </el-submenu>
         </el-menu>
@@ -102,6 +103,9 @@ export default {
       }
       if (this.user.role === 'TEACHER') {
         this.$router.push('/teacherPerson')
+      }
+      if (this.user.role === 'TEACHER1') {
+        this.$router.push('/teacherPerson1')
       }
       if (this.user.role === 'STUDENT') {
         this.$router.push('/studentPerson')

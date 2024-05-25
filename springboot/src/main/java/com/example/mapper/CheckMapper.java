@@ -33,7 +33,7 @@ public interface CheckMapper {
     /**
      * 修改总数
      */
-    int updateClassTotal();
+//    int updateClassTotal();
 
     /**
       * 根据ID查询
@@ -49,6 +49,8 @@ public interface CheckMapper {
     List<Check> selectAll(@Param("params") Params params);
 
     List<Check> selectTeacher(@Param("params") Params params);
+
+    List<Check> selectTeacher1(@Param("params") Params params);
 
     List<Check> selectClasses(Classes classes);
 //    List<Check> selectUser(Check check);

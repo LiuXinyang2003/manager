@@ -48,6 +48,28 @@ public class StudentService {
         studentMapper.insert(student);
     }
 
+    public void add2(Student student) {
+        Student dbStudent = studentMapper.selectByUsername(student.getUsername());
+
+        System.out.println("用户名是"+student.getUsername());
+        if (ObjectUtil.isNotNull(dbStudent)) {
+            throw new CustomException(ResultCodeEnum.USER_EXIST_ERROR);
+        }
+        if (ObjectUtil.isEmpty(student.getPassword())) {
+            student.setPassword(Constants.USER_DEFAULT_PASSWORD);
+        }
+        if (ObjectUtil.isEmpty(student.getName())) {
+            student.setName(student.getUsername());
+        }
+        student.setUsername(student.getUsername());
+        student.setRole(RoleEnum.STUDENT.name());
+        student.setCollegeId(studentMapper.selectCollegeId(student));;
+        student.setSpecialityId(studentMapper.selectSpecialityId(student));
+        student.setClassId(studentMapper.selectClassId(student));
+        studentMapper.insert(student);
+    }
+
+
     /**
      * 删除
      */
@@ -87,17 +109,24 @@ public class StudentService {
     }
 
 
-    public List<Student> findAll(String role,Integer classId) {
+    public List<Student> findAll(String role,Integer classId,String name,String classNameP) {
         System.out.println("role的值"+role);
         if(RoleEnum.TEACHER.toString().equals(role)){
             System.out.println("进入Service层"+role);
-            List<Student> list = studentMapper.selectTeacher2(classId);
+            List<Student> list = studentMapper.selectTeacher2(classId,name);
             return list;
         }
         else{
-            List<Student> list = studentMapper.selectAll2();
+            List<Student> list = studentMapper.selectAll2(name,classNameP);
             return list;
         }
+    }
+
+    public List<Student> findAllPer(String role,Integer classId,String name) {
+        System.out.println("role的值"+role);
+            System.out.println("进入Service层"+role);
+            List<Student> list = studentMapper.selectTeacher2(classId,name);
+            return list;
     }
     /**
      * 分页查询
@@ -113,6 +142,11 @@ public class StudentService {
             List<Student> list = studentMapper.selectAll(params);
             return PageInfo.of(list);
         }
+    }
+    public PageInfo<Student> selectPage2(Params params) {
+        PageHelper.startPage(params.getPageNum(), params.getPageSize());
+        List<Student> list = studentMapper.selectTeacher(params);
+        return PageInfo.of(list);
     }
 
     public Student selectAdd(String name) {

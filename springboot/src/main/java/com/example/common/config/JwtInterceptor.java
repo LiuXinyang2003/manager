@@ -12,6 +12,7 @@ import com.example.entity.Account;
 import com.example.exception.CustomException;
 import com.example.service.AdminService;
 import com.example.service.StudentService;
+import com.example.service.Teacher1Service;
 import com.example.service.TeacherService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +36,9 @@ public class JwtInterceptor implements HandlerInterceptor {
 
     @Resource
     private TeacherService teacherService;
+
+    @Resource
+    private Teacher1Service teacher1Service;
 
     @Resource
     private StudentService studentService;
@@ -62,7 +66,10 @@ public class JwtInterceptor implements HandlerInterceptor {
                 account = adminService.selectById(Integer.valueOf(userId));
             }
             if (RoleEnum.TEACHER.name().equals(role)) {
-                account = studentService.selectById(Integer.valueOf(userId));
+                account = teacherService.selectById(Integer.valueOf(userId));
+            }
+            if (RoleEnum.TEACHER1.name().equals(role)) {
+                account = teacher1Service.selectById(Integer.valueOf(userId));
             }
             if (RoleEnum.STUDENT.name().equals(role)) {
                 account = studentService.selectById(Integer.valueOf(userId));

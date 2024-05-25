@@ -65,15 +65,15 @@
           <el-input v-model="form.email" placeholder="邮箱"></el-input>
         </el-form-item>
         <el-form-item label="头像">
-          <el-upload
-              class="avatar-uploader"
-              :action="$baseUrl + '/files/upload'"
-              :headers="{ token: user.token }"
-              list-type="picture"
-              :on-success="handleAvatarSuccess"
-          >
-            <el-button type="primary">上传头像</el-button>
-          </el-upload>
+<el-upload
+    class="avatar-uploader"
+    :action="$baseUrl + '/files/upload'"
+    :headers="{ token: user.token }"
+    list-type="picture"
+    :on-success="handleAvatarSuccess"
+>
+  <el-button type="primary">上传头像</el-button>
+</el-upload>
         </el-form-item>
       </el-form>
 

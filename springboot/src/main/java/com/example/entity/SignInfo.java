@@ -15,11 +15,12 @@ public class SignInfo implements Serializable {
     private String overtime;
     private Integer studentId;
     private String studentName;
-    private Integer teacherId;
     private Integer total;
     private String teacherName;
     private Integer classId;
     private String className;
+    private String role;
+    private String username;
 
 
     public Integer getId() {
@@ -86,14 +87,6 @@ public class SignInfo implements Serializable {
         this.studentName = studentName;
     }
 
-    public Integer getTeacherId() {
-        return teacherId;
-    }
-
-    public void setTeacherId(Integer teacherId) {
-        this.teacherId = teacherId;
-    }
-
     public String getTeacherName() {
         return teacherName;
     }
@@ -116,5 +109,21 @@ public class SignInfo implements Serializable {
 
     public void setClassName(String className) {
         this.className = className;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
     }
 }

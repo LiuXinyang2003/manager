@@ -2,7 +2,6 @@
   <div>
     <div class="search">
       <el-input placeholder="请输入姓名查询" style="width: 200px" v-model="params.name"></el-input>
-      <el-input placeholder="请输入班级查询" style="width: 200px" v-model="params.classNameP"></el-input>
       <el-button type="info" plain style="margin-left: 10px" @click="load(1)">查询</el-button>
       <el-button type="warning" plain style="margin-left: 10px" @click="reset">重置</el-button>
     </div>
@@ -15,10 +14,11 @@
       <el-upload
           action="http://localhost:9090/student/upload" style="display: inline-block; margin-left: 10px"
           :show-file-list="false"
-          :on-success="successUploadTable" v-if="user.role =='ADMIN'">
+          :on-success="successUploadTable">
         <el-button type="primary">导入报表</el-button>
       </el-upload>
     </div>
+
     <div class="table">
       <el-table :data="tableData" ref="table" strip @selection-change="handleSelectionChange" :row-key="getRowKeys">
         <el-table-column type="selection" width="55" align="center" v-if="user.role =='ADMIN'" :reserve-selection="true"></el-table-column>
@@ -99,7 +99,7 @@
           <el-select v-model="form.classId" placeholder="请选择班级" style="width: 100%">
             <el-option v-for="item in classData" :key="item.id" :label="item.name" :value="item.id"></el-option>
           </el-select>
-        </el-form-item>
+      </el-form-item>
 
       </el-form>
 
@@ -126,7 +126,6 @@ export default {
       params:{
         name: '',
         role: '',
-        classNameP:'',
         pageNum: 1,   // 当前的页码
         pageSize: 10,  // 每页显示的个数
       },
@@ -170,7 +169,6 @@ export default {
     }
   },
   methods: {
-
     getRowKeys(row) {
       return row.id;
     },
@@ -312,8 +310,9 @@ export default {
       if (pageNum) this.params.pageNum = pageNum
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
-      this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
-      this.$request.get('/student/selectPage', {
+      // this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
+      this.params.classId = this.$route.params.myParam
+      this.$request.get('/student/selectPage2', {
         params: this.params
       }).then(res => {
         this.tableData = res.data?.list
@@ -322,7 +321,6 @@ export default {
     },
     reset() {
       this.params.name = null
-      this.params.classNameP = null
       this.load(1)
     },
 
@@ -341,11 +339,12 @@ export default {
     exp(){
       let user = localStorage.getItem("xm-user")
       let token = JSON.parse(user).token
+      console.log("token的值为"+token)
       this.params.role = JSON.parse(localStorage.getItem("xm-user")).role
       this.params.username = JSON.parse(localStorage.getItem("xm-user")).name
-      this.params.classId = JSON.parse(localStorage.getItem("xm-user")).classId
-      location.href = 'http://localhost:9090/student/export?token=' +token+'&'+"role="+this.params.role+
-          '&'+"classId="+this.params.classId+'&'+"name="+this.params.name+'&'+"classNameP="+this.params.classNameP
+      console.log(this.params.classId)
+      location.href = 'http://localhost:9090/student/exportPer?token=' +token+'&'+"role="+this.params.role+
+          '&'+"classId="+this.params.classId+'&'+"name="+this.params.name
     }
   }
 }

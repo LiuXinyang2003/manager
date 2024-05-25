@@ -24,6 +24,7 @@ public class CheckService {
      * 新增
      */
     public void add(Check check) {
+        System.out.println("小帕才2"+check.getRole());
         checkMapper.insert(check);
     }
 
@@ -65,10 +66,10 @@ public class CheckService {
     /**
      * 修改总数
      */
-    public void updateClassTotal() {
-        System.out.println("呜呜呜呜呜w");
-        checkMapper.updateClassTotal();
-    }
+//    public void updateClassTotal() {
+//        System.out.println("呜呜呜呜呜w");
+//        checkMapper.updateClassTotal();
+//    }
 
     public void updateClassId() {
         checkMapper.updateClassId();
@@ -115,6 +116,10 @@ public class CheckService {
         String currentUserRole = params.getRole();
         if(RoleEnum.TEACHER.toString().equals(currentUserRole)){
             List<Check> list = checkMapper.selectTeacher(params);
+            return PageInfo.of(list);
+        }
+        else if(RoleEnum.TEACHER1.toString().equals(currentUserRole)){
+            List<Check> list = checkMapper.selectTeacher1(params);
             return PageInfo.of(list);
         }
         else{

@@ -5,7 +5,7 @@
 <mapper namespace="com.example.mapper.CheckMapper">
 
     <sql id="Base_Column_List">
-        id,name,start,overtime,state,class_id
+        id,name,start,overtime,state,class_id,role1
     </sql>
     <select id="selectUser" resultType="com.example.entity.Check">
         select incheck.*,classes.name as className
@@ -63,6 +63,17 @@
         order by id desc
     </select>
 
+    <select id="selectTeacher1" resultType="com.example.entity.Check">
+        select incheck.*,classes.name as className
+        from incheck
+        left join classes on classes.id = incheck.class_id
+        <where>
+            incheck.role1 = #{params.role} and
+            incheck.username = #{params.username}
+            <if test="params.name != null and params.name != ''"> and incheck.name like concat('%',#{params.name},'%')</if>
+        </where>
+    </select>
+
     <select id="selectById" resultType="com.example.entity.Check">
         select
         <include refid="Base_Column_List" />
@@ -84,7 +95,7 @@
                 <if test="overtime != null">overtime,</if>
                 <if test="state != null">state,</if>
                 <if test="username != null">username,</if>
-                <if test="total != null">total,</if>
+                <if test="role != null">role1,</if>
                 <if test="classId != null">class_id,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -94,7 +105,7 @@
                 <if test="overtime != null">#{overtime},</if>
                 <if test="state != null">#{state},</if>
                 <if test="username != null">#{username},</if>
-                <if test="total != null">#{total},</if>
+                <if test="role != null">#{role},</if>
                 <if test="classId != null">#{classId},</if>
         </trim>
     </insert>
@@ -125,14 +136,18 @@
             <if test="param2!= null">studentname,</if>
             <if test="param1.start != null">start,</if>
             <if test="param1.overtime != null">overtime,</if>
-            <if test="param1.teacherId != null">teacher_id,</if>
+            <if test="param1.classId != null">class_id,</if>
+            <if test="param1.role != null">role,</if>
+            <if test="param1.username != null">username,</if>
         </trim>
         <trim prefix="values (" suffix=")" suffixOverrides=",">
             <if test="param1.name != null">#{param1.name},</if>
             <if test="param2 != null">#{param2},</if>
             <if test="param1.start != null">#{param1.start},</if>
             <if test="param1.overtime != null">#{param1.overtime},</if>
-            <if test="param1.teacherId != null">#{param1.teacherId},</if>
+            <if test="param1.classId != null">#{param1.classId},</if>
+            <if test="param1.role != null">#{param1.role},</if>
+            <if test="param1.username != null">#{param1.username},</if>
         </trim>
     </insert>
 
@@ -151,21 +166,24 @@
             <if test="state != null">
                 state = #{state},
             </if>
-            <if test="total != null">
-                total = #{total},
+            <if test="role != null">
+                role1 = #{role},
+            </if>
+            <if test="classId != null">
+                class_id = #{classId},
             </if>
         </set>
         where id = #{id} 
     </update>
 
-    <update id="updateClassTotal">
-        UPDATE incheck
-        SET total = (
-            SELECT COUNT(*)
-            FROM student
-            WHERE student.class_id = incheck.class_id
-        )
-    </update>
+<!--    <update id="updateClassTotal">-->
+<!--        UPDATE incheck-->
+<!--        SET role1 = (-->
+<!--            SELECT COUNT(*)-->
+<!--            FROM student-->
+<!--            WHERE student.class_id = incheck.class_id-->
+<!--        )-->
+<!--    </update>-->
 
     <update id="updateClassId">
         UPDATE incheck

@@ -20,6 +20,24 @@ public class SignInfoService {
     @Resource
     private SignInfoMapper signInfoMapper;
 
+
+
+    public List<SignInfo> findAll(String role,Integer classId,String name,String name2,String classNameP,String username) {
+        System.out.println("role的值"+role);
+        if(RoleEnum.TEACHER.toString().equals(role)){
+            System.out.println("进入Service层"+role);
+            List<SignInfo> list = signInfoMapper.selectTeacher2(classId,name,name2);
+            return list;
+        }
+        if(RoleEnum.TEACHER1.toString().equals(role)){
+            List<SignInfo> list = signInfoMapper.selectTeacher11(role,name,name2,username);
+            return list;
+        }
+        else{
+            List<SignInfo> list = signInfoMapper.selectAll2(name,name2,classNameP);
+            return list;
+        }
+    }
     /**
      * 新增
      */
@@ -28,9 +46,6 @@ public class SignInfoService {
     }
 
 
-    public void signAdd(SignInfo signInfo) {
-        signInfoMapper.signAdd(signInfo);
-    }
 
     /**
      * 删除
@@ -99,6 +114,10 @@ public class SignInfoService {
         }
         else if(RoleEnum.TEACHER.toString().equals(currentUserRole)){
             List<SignInfo> list = signInfoMapper.selectTeacher(params);
+            return PageInfo.of(list);
+        }
+        else if(RoleEnum.TEACHER1.toString().equals(currentUserRole)){
+            List<SignInfo> list = signInfoMapper.selectTeacher1(params);
             return PageInfo.of(list);
         }
         else{

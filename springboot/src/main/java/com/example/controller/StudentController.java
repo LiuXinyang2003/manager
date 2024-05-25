@@ -127,6 +127,12 @@ public class StudentController {
         return Result.success(page);
     }
 
+    @GetMapping("/selectPage2")
+    public Result selectPage2(Params params) {
+        PageInfo<Student> page = studentService.selectPage2(params);
+        return Result.success(page);
+    }
+
 
     @GetMapping("/selectAdd")
     public Result selectAdd(@RequestParam String name) {
@@ -136,7 +142,11 @@ public class StudentController {
 
 
     @GetMapping("/export")
-    public Result export(HttpServletResponse response,@RequestParam(value = "role",required = true) String role, @RequestParam(value = "classId",required = false,defaultValue = "0")  String classIdStr) throws IOException {
+    public Result export(HttpServletResponse response,@RequestParam(value = "role",required = true) String role,
+                         @RequestParam(value = "classId",required = false,defaultValue = "0")  String classIdStr,
+//                         @RequestParam(value = "username",required = true) String username,
+                         @RequestParam(value = "name",required = true) String name,
+                         @RequestParam(value = "classNameP",required = true) String classNameP) throws IOException {
         Integer classId;
         try {
             // 尝试将classIdStr转换为Integer
@@ -146,8 +156,8 @@ public class StudentController {
             classId = 0;
         }
         System.out.println("role的con值"+role);
-        System.out.println("classId的con值"+role);
-        List<Student> both = studentService.findAll(role,classId);
+        System.out.println("classId的con值"+classId);
+        List<Student> both = studentService.findAll(role,classId,name,classNameP);
 //        if(CollectionUtil.isEmpty(both)){
 //            throw new CustomException("未找到数据");
 //        }
@@ -156,6 +166,50 @@ public class StudentController {
             Map<String, Object> row = new HashMap<>();
             row.put("姓名",student.getName());
             row.put("性别",student.getGender());
+            row.put("学院",student.getCollegeName());
+            row.put("专业",student.getSpecialityName());
+            row.put("班级",student.getClassName());
+            list.add(row);
+        }
+        ExcelWriter wr = ExcelUtil.getWriter(true);
+        wr.write(list,true);
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=utf-8");
+        response.setHeader("Content-Disposition","attachment;filename=student.xlsx");
+        ServletOutputStream out = response.getOutputStream();
+        wr.flush(out, true);
+        wr.close();
+        IoUtil.close(System.out);
+        return Result.success();
+
+    }
+
+    @GetMapping("/exportPer")
+    public Result exportPer(HttpServletResponse response,@RequestParam(value = "role",required = true) String role,
+                         @RequestParam(value = "classId",required = false,defaultValue = "0")  String classIdStr,
+//                       @RequestParam(value = "username",required = true) String username,
+                         @RequestParam(value = "name",required = true) String name) throws IOException {
+        Integer classId;
+        try {
+            // 尝试将classIdStr转换为Integer
+            classId = Integer.parseInt(classIdStr);
+        } catch (NumberFormatException e) {
+            // 如果转换失败（例如，当classIdStr是"null"时），则使用默认值0
+            classId = 0;
+        }
+        System.out.println("role的con值"+role);
+        System.out.println("classId的con值"+classId);
+        List<Student> both = studentService.findAllPer(role,classId,name);
+//        if(CollectionUtil.isEmpty(both)){
+//            throw new CustomException("未找到数据");
+//        }
+        List<Map<String, Object>> list = new ArrayList<>(both.size());
+        for (Student student : both) {
+            Map<String, Object> row = new HashMap<>();
+
+            row.put("姓名",student.getName());
+            row.put("性别",student.getGender());
+            row.put("学院",student.getCollegeName());
+            row.put("专业",student.getSpecialityName());
             row.put("班级",student.getClassName());
             list.add(row);
         }
@@ -176,9 +230,12 @@ public class StudentController {
         List<Student> infoList = ExcelUtil.getReader(file.getInputStream()).readAll(Student.class);
         if (!CollectionUtil.isEmpty(infoList)) {
             for (Student student : infoList) {
+                System.out.println("学生名字是"+student.getName());
+                System.out.println("学生性别是"+student.getGender());
+                System.out.println("学生账号是"+student.getUsername());
+                System.out.println("学生班级是"+student.getClassName());
                 try {
-
-                    studentService.add(student);
+                    studentService.add2(student);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
